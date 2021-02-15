@@ -11,6 +11,7 @@ import android.app.DatePickerDialog;
 import android.app.DatePickerDialog.OnDateSetListener;
 import android.content.Intent;
 import android.os.Bundle;
+import android.view.Display;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
@@ -18,6 +19,8 @@ import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.Toast;
 
+import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.Calendar;
 
 
@@ -29,6 +32,7 @@ public class addItem extends AppCompatActivity implements View.OnClickListener{
     private EditText editTextLatitude;
     private EditText editTextLongitude;
     private EditText editTextDate;
+    private ArrayList<ModelClass> userList;
 
 
 
@@ -54,6 +58,8 @@ public class addItem extends AppCompatActivity implements View.OnClickListener{
         btnDatePicker.setOnClickListener(this);
 
 
+
+
         editTextTitle = findViewById(R.id.txtAddTitle);
         editTextDescription = findViewById(R.id.txtAddDec);
         editTextLatitude = findViewById(R.id.txtAddLat);
@@ -61,24 +67,30 @@ public class addItem extends AppCompatActivity implements View.OnClickListener{
         editTextDate = findViewById(R.id.txtAddDate);
 
 
+
+
         Button saveList = (Button) findViewById(R.id.btnSubmit);
         saveList.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if (editTextTitle.getText().equals("")
-                || editTextDescription.getText().equals("") || editTextLatitude.getText().equals("")
-                || editTextLongitude.getText().equals("") || editTextDate.getText().equals("")){
+
+                String title = editTextTitle.getText().toString();
+                String description = editTextDescription.getText().toString();
+                String latitude = editTextLatitude.getText().toString();
+                String longitude = editTextLongitude.getText().toString();
+                String date = editTextDate.getText().toString();
+
+
+                if (title.matches("")
+                || description.matches("") || latitude.matches("")
+                || longitude.matches("") || date.matches("")){
                     Toast.makeText(addItem.this, "Please Enter All Data", Toast.LENGTH_SHORT).show();
+                    return;
                 }
 
                 else{
-                    String title = editTextTitle.getText().toString();
-                    String description = editTextDescription.getText().toString();
-                    String latitude = editTextLatitude.getText().toString();
-                    String longitude = editTextLongitude.getText().toString();
-                    String date = editTextDate.getText().toString();
 
-                    Intent intent = new Intent(addItem.this, MainActivity.class);
+                    /*Intent intent = new Intent(addItem.this, MainActivity.class);
                     intent.putExtra("title", title);
                     intent.putExtra("description", description);
                     intent.putExtra("latitude",latitude);
@@ -86,7 +98,20 @@ public class addItem extends AppCompatActivity implements View.OnClickListener{
                     intent.putExtra("date", date);
                     startActivityForResult(intent,1);
 
+                     */
+                    Intent intent = new Intent();
+                    intent.putExtra("title", title);
+                    intent.putExtra("description", description);
+                    intent.putExtra("latitude",latitude);
+                    intent.putExtra("longitude", longitude);
+                    intent.putExtra("date", date);
+                    setResult(RESULT_OK,intent);
+                    finish();
+
                 }
+
+
+
             }
         });
 
@@ -116,7 +141,7 @@ public class addItem extends AppCompatActivity implements View.OnClickListener{
         DatePickerDialog datePickerDialog = new DatePickerDialog(this, new OnDateSetListener() {
             @Override
             public void onDateSet(DatePicker datePicker, int i, int i1, int i2) {
-                txtDate.setText(i2 + "-" + (i1 + 1) + "-" + i);
+                editTextDate.setText(i2 + "-" + (i1 + 1) + "-" + i);
 
             }
         }, mYear, mMonth, mDay);
